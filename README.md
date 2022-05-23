@@ -1,7 +1,5 @@
 # DFUnit - DataFlex Unit Testing Framework
 
-## DFUnit - DataFlex Unit Testing Framework
-
 **DFUnit** is a renewed DataFlex testing framework. It was originally forked from [https://github.com/olaeld/DFUnit](https://github.com/olaeld/DFUnit). Data Access originally forked it to accommodate the framework for multiple reporters like seen in frameworks like doctest. Most importantly support for build-servers was added using a new Console reporter and exit codes. It supports outputting to one of the most used test-data formats **JUnit** which will help for a steady CI flow. The framework is and will stay free.
 
 ### Getting Started
