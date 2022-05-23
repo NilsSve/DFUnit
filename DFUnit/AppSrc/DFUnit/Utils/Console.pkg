@@ -1,0 +1,49 @@
+﻿Use UI
+
+{ Visibility=Private }
+External_Function DFUnit_WinAPI_ExitProcess "ExitProcess" Kernel32.dll Integer iExitCode Returns Integer
+
+Procedure DFUnit_ConsoleExit Global Integer iOptExitCode
+    Integer iVoid
+    If (num_arguments > 0) ;
+        Move (DFUnit_WinAPI_ExitProcess(iOptExitCode)) to iVoid
+    Else
+        Move (DFUnit_WinAPI_ExitProcess(0)) to iVoid
+End_Procedure
+
+{ Visibility=Private }
+External_Function DFUnit_WinAPI_AttachConsole "AttachConsole" Kernel32.dll ;
+    Integer dwProcessID ;
+    Returns Integer
+
+{ Visibility=Private }
+External_Function DFUnit_WinAPI_GetStdHandle "GetStdHandle" Kernel32.dll ;
+    Integer nStdHandle ;
+    Returns Integer
+
+{ Visibility=Private }
+Global_Variable Handle ghDFUnitConsoleHandle
+Move (DFUnit_WinAPI_AttachConsole(-1)) to ghDFUnitConsoleHandle // -1 == ATTACH_PARENT_PROCESS
+Move (DFUnit_WinAPI_GetStdHandle(-11)) to ghDFUnitConsoleHandle // -11 == STD_OUTPUT_HANDLE
+
+{ Visibility=Private }
+External_Function DFUnit_WinAPI_WriteConsole "WriteConsoleW" Kernel32.dll ;
+    Handle hConsole ;
+    WString lwpBuffer ;
+    DWord nCharsToWrite ;
+    Pointer lpnCharsWritten ;
+    Pointer lpReserved ;
+    Returns Integer
+
+{ Visibility=Private }
+Procedure DFUnit_ConsoleWrite Global String sText
+    Integer iStatus
+    WString wsText
+    Move sText to wsText
+    Move (DFUnit_WinAPI_WriteConsole(ghDFUnitConsoleHandle, wsText, SizeOfWString(wsText), 0, 0)) to iStatus
+End_Procedure
+
+{ Visibility=Private }
+Procedure DFUnit_ConsoleWriteLn Global String sText
+    Send DFUnit_ConsoleWrite (sText+(Character(10))+(Character(13)))
+End_Procedure

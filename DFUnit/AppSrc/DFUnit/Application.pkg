@@ -1,0 +1,155 @@
+Use cApplication.pkg
+Use Data_Set.pkg
+
+Use DFUnit\Version.pkg
+Use DFUnit\GUI.pkg
+Use DFUnit\Utils.pkg
+Use DFUnit\Testing.pkg
+Use DFUnit\Fixturing.pkg
+Use DFUnit\Reporting.pkg
+
+Use DFUnit\Results\StatisticsCollector.pkg
+
+Class cDFUnitTestApplication is a cDFUnitFixture
+    
+    Import_Class_Protocol cDFUnitReporterManager_Mixin
+    Import_Class_Protocol cDFUnitFixtureCollector_Mixin
+    Import_Class_Protocol cDFUnitTestCollector_Mixin
+    Import_Class_Protocol cDFUnitStatisticsCollector_Mixin
+    Import_Class_Protocol cDFUnitTestRunner_Mixin
+    Import_Class_Protocol cDFUnitFixtureRunner_Mixin
+    
+    Procedure Construct_Object
+        Forward Send Construct_Object
+        Move Self to ghoTestApplication
+
+        Object poErrorTracker is a cDFUnitErrorTracker
+        End_Object
+        
+        Send Define_cDFUnitReporterManager_Mixin
+        Send Define_cDFUnitFixtureCollector_Mixin
+        Send Define_cDFUnitTestCollector_Mixin
+        Send Define_cDFUnitStatisticsCollector_Mixin
+        Send Define_cDFUnitTestRunner_Mixin
+        Send Define_cDFUnitFixtureRunner_Mixin
+        
+        Set psTestFixtureName to "All Tests"
+        
+        Property Boolean pbAutoRun True
+        Property Boolean pbAutoRunTests True
+        Property Boolean pbUseUIIfInDebugger True
+        Property Boolean pbUseUI True
+    End_Procedure
+    
+    Procedure End_Construct_Object
+        If (pbAutoRun(Self)) ;
+            Send AutoRun
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure ParseEnvironmentFromCommandLine
+        Handle hoCommandLine
+        Integer iArgCount iIndex
+        String sArgument sTemp
+
+        Get phoCommandLine of ghoApplication to hoCommandLine
+        Get CountOfArgs of hoCommandLine to iArgCount
+        
+        For iIndex from 0 to iArgCount
+            Move (Argument(hoCommandLine, iIndex)) to sArgument
+            Case Begin
+                Case (sArgument = "-h" or sArgument = "--help")
+                    Send DFUnit_ConsoleWriteLn "DFUnit - DataFlex Unit Testing Framework"
+                    Send DFUnit_ConsoleWrite "Version: "
+                    Send DFUnit_ConsoleWrite DFUNIT_VERSION
+                    Send DFUnit_ConsoleWrite " - "
+                    Send DFUnit_ConsoleWriteLn DFUNIT_SUB_VERSION
+                    Send DFUnit_ConsoleExit 0
+                    Case Break
+                Case (sArgument = "-c" or sArgument = "--console")
+                    Set pbUseUI to False
+                    Case Break
+                Case (sArgument = "-g" or sArgument = "--gui")
+                    Set pbUseUI to True
+                    Case Break
+                Case (sArgument = "-n" or sArgument = "--no-autorun")
+                    Set pbAutoRunTests to False
+                    Case Break
+                Case (sArgument = "-o" or sArgument = "--output")
+                    If (iArgCount - iIndex <= 0) Begin
+                        Send DFUnit_ConsoleWriteLn "No outputfile has been specified."
+                        Send DFUnit_ConsoleExit -1
+                    End
+                    
+                    String sAbsolutePath
+                    
+                    Increment iIndex
+                    Move (Argument(hoCommandLine, iIndex)) to sArgument
+                    If (not(DFUnit_AbsolutPath(sArgument, (&sAbsolutePath)))) Begin
+                        Send DFUnit_ConsoleWriteLn "Invalid outputname."
+                        Send DFUnit_ConsoleExit -1
+                    End
+                    
+                    Object oXMLReporter is a cDFUnitXMLReporter
+                        Set psFileName to sAbsolutePath
+                    End_Object
+                    Send AddReporter oXMLReporter
+                    Case Break
+            Case End
+        Loop
+    End_Procedure
+    
+    Procedure AutoRun
+        Boolean bUseUI
+        Send ParseEnvironmentFromCommandLine
+        
+        Get pbUseUI to bUseUI
+        
+        If (bUseUI or (IsDebuggerPresent() and pbUseUIIfInDebugger(Self))) Begin
+            Object oUIApplication is a cDFUnitUIPanel
+            End_Object
+            Start_UI
+        End
+        Else Begin
+            Integer iExitCode
+            Object oConsoleReporter is a cDFUnitConsoleReporter
+            End_Object
+            Send AddReporter oConsoleReporter
+            Send ManualRunTests
+            
+            If (TestsSucceeded(Self)) Begin
+                Send DFUnit_ConsoleExit 0
+            End
+            Else Begin
+                Send DFUnit_ConsoleExit -1
+            End
+        End
+    End_Procedure
+    
+    Procedure ManualRunTests
+        Send ClearTestCounters
+        Send ClearErrorTracker of ghoErrorTracker
+        
+        // Start Testing
+        Send Reporters_Start Self
+        Send RunWholeFixture Self
+        Send Reporters_Finish Self
+    End_Procedure    
+    
+    // Overrides for the cDFUnitFixture /////////////////////////////
+    
+    { Visibility=Private }
+    Procedure SetupFixture
+        Send BeforeSetup
+        Send Setup
+        Send AfterSetup
+    End_Procedure
+    
+    { Visibility=Private }
+    Procedure TearDownFixture
+        Send BeforeTearDown
+        Send TearDown
+        Send AfterTearDown
+    End_Procedure
+
+End_Class

@@ -1,0 +1,8 @@
+﻿*.dep
+*.prn
+*.log
+*.dbg
+*.exe
+**/LoginEncryptionKey.inc
+
+IdeSrc/

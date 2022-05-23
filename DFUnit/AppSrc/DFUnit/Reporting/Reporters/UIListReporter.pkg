@@ -1,0 +1,127 @@
+Use cRichEdit.pkg
+
+Use DFUnit\Reporting\LineBasedReporting.pkg
+
+Class cDFUnitUIListInmediateReporter is a cRichEdit
+        
+    Import_Class_Protocol cDFUnitLineBasedReporter_Mixin
+    Import_Class_Protocol IReporter_Mixin cDFUnitUIListInmediateReporter All No_Overwrite
+    
+    Procedure Construct_Object
+        Forward Send Construct_Object
+        
+        Set Focus_Mode to NonFocusable
+        Send HideSelection True
+        Set Read_Only_State to False
+        Set Color to clWhite
+        
+        Send Define_cDFUnitLineBasedReporter_Mixin
+    End_Procedure
+    
+    Procedure Start Handle hEnv
+        Send Select_All
+        Send Delete
+        Set Color to clGray
+    End_Procedure
+    
+    { Visibility=Private }
+    Procedure Print String sLine
+        String sIndentation
+        
+        Get ScopeIndentation to sIndentation
+        Send AppendText (sIndentation + sLine)
+        Set pbNewLine to False
+    End_Procedure
+    
+    { Visibility=Private }
+    Procedure PrintLn String sLine
+        String sIndentation
+        
+        Get ScopeIndentation to sIndentation
+        Send AppendTextLn (sIndentation + sLine)
+        Set pbNewLine to True
+    End_Procedure
+    
+    { Visibility=Private }
+    Procedure Line
+        If (pbNewLine(Self) = False) ;
+            Send PrintLn ""
+        Send AppendTextLn (psLine(Self))
+    End_Procedure
+    
+End_Class
+
+Class cDFUnitUIListReporter is a cDFUnitUIListInmediateReporter
+    
+    Procedure Construct_Object
+        Forward Send Construct_Object
+        
+        { Visibility=Private }
+        Property String[] paMessages
+    End_Procedure
+    
+    Procedure Start Handle hEnv
+        Forward Send Start
+        
+        String[] aMessages
+        Get paMessages to aMessages
+        Move "" to aMessages[SizeOfArray(aMessages)]
+        Set paMessages to aMessages
+    End_Procedure
+    
+    Procedure Finish Handle hEnv
+        Forward Send Finish hEnv
+        
+        Integer iIterator iMaxIndex
+        String[] aMessages
+        Get paMessages to aMessages
+        // Minus the last empty entry.
+        Move (SizeOfArray(aMessages) - 1 - 1) to iMaxIndex
+        For iIterator from 0 to iMaxIndex
+            Send AppendTextLn aMessages[iIterator]
+        Loop
+    End_Procedure
+    
+    { Visibility=Private }
+    Procedure Print String sLine
+        String sIndentation
+        String[] aMessages
+        
+        Get ScopeIndentation to sIndentation
+        Get paMessages to aMessages
+        
+        If (pbNewLine(Self) = True) Begin
+            Move (sIndentation + sLine) to aMessages[SizeOfArray(aMessages) - 1]
+        End
+        Else Begin
+            Move (aMessages[SizeOfArray(aMessages) - 1] + sLine) to aMessages[SizeOfArray(aMessages) - 1]
+        End
+        
+        Set paMessages to aMessages
+        Set pbNewLine to False
+    End_Procedure
+    
+    { Visibility=Private }
+    Procedure PrintLn String sLine
+        Send Print sLine
+        
+        String[] aMessages
+        Get paMessages to aMessages
+        Move "" to aMessages[SizeOfArray(aMessages)]
+        Set paMessages to aMessages
+        Set pbNewLine to True
+    End_Procedure
+    
+    { Visibility=Private }
+    Procedure Line
+        If (pbNewLine(Self) = False) ;
+            Send PrintLn ""
+        
+        String[] aMessages
+        Get paMessages to aMessages
+        Move (psLine(Self)) to aMessages[SizeOfArray(aMessages) - 1]
+        Move "" to aMessages[SizeOfArray(aMessages)]
+        Set paMessages to aMessages
+    End_Procedure
+    
+End_Class

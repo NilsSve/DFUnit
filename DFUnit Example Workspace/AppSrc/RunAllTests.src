@@ -1,0 +1,25 @@
+﻿Use DFUnit.pkg
+
+Object oApplication is a cApplication
+End_Object
+
+Object oTestApplication is a cDFUnitTestApplication
+    Use Leap_year_spec.pkg
+    
+    { Published=True }
+    Procedure TrueIsTrue
+        Send Assert True "True should be True."
+    End_Procedure
+    
+    { Published=True }
+    Procedure FalseIsFalse
+        Send AssertFalse False "False should be False."
+    End_Procedure
+    
+    { Published=True }
+    Procedure ExpectingAnError
+        Send ExpectError DFERR_PROGRAM
+            Error DFERR_PROGRAM "An expected error."
+        Send UnExpectError DFERR_PROGRAM
+    End_Procedure
+End_Object

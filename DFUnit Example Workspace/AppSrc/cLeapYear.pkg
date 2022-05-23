@@ -1,4 +1,4 @@
-Use UI
+﻿Use GlobalFunctionsProcedures.pkg
 
 Class cLeapYear is a cObject
     Function DivisibleBy Integer iDividend Integer iDivisor Returns Boolean

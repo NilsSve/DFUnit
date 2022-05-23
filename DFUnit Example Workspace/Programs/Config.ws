@@ -1,12 +1,8 @@
 [Workspace]
 Home=..\
 AppSrcPath=.\AppSrc
-AppHTMLPath=.\AppHtml
-BitmapPath=.\Bitmaps
 IdeSrcPath=.\IdeSrc
-DataPath=.\Data
-DDSrcPath=.\DDSrc
-HelpPath=.\Help
+DataPath=.\
+DDSrcPath=.\
 ProgramPath=.\Programs
-FileList=.\Data\Filelist.cfg
-Description=DataFlexUnit Example Workspace
+FileList=.\DummyFilelist.cfg

@@ -1,16 +1,21 @@
-DFUnit/test_results.xml
+# Ignore basic compiler files.
 *.dep
 *.prn
-DFUnit/IdeSrc/Workspace.loc
 *.dbg
 *.exe
 *.dsk
 *.mtd
-DFUnit Example Workspace/test_results.xml
 *.fld
 *.pbg
 *.pdp
 *.pkd
 *.prp
+*.log
+
+# Ignore the Studio files.
 *.loc
-DFUnit Example Workspace/AppSrc/LoginEncryptionKey.inc
+**/LoginEncryptionKey.inc
+**/IdeSrc/
+
+# Ignore xml output of DFUnit
+**/test_results.xml
