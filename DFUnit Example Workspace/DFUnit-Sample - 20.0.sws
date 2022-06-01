@@ -7,7 +7,7 @@ DefaultFormHeight=12
 [Conditionals]
 Is$WebApp=False
 Is$Win64=True
-[Libraries]
-Lib1=Libraries\DFUnit\DFUnit-VDF201.sws
 [Projects]
 Project0=RunAllTests.src
+[Libraries]
+Lib1=..\DFUnit\DFUnit-20.0.sws

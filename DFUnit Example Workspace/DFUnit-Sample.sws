@@ -10,4 +10,4 @@ Is$Win64=True
 [Projects]
 Project0=RunAllTests.src
 [Libraries]
-Lib1=..\DFUnit\DFUnit.sws
+Lib1=..\DFUnit\DFUnit-20.1.sws

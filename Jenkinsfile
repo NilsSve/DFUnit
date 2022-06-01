@@ -2,7 +2,7 @@ pipeline {
     agent { label "Windows" }
     environment {
         // General
-        COMPILER = 'C:\\dev\\DataFlex 20.1\\Bin64\\DfCompConsole.exe'
+        COMPILER = 'C:\\Program Files\\DataFlex 20.1\\Bin64\\DfCompConsole.exe'
     }
     stages {
         stage("Pipeline") {
