@@ -1,0 +1,22 @@
+Use DFUnit\Web\WebAppDependencies.pkg
+
+{Visibility=Private}
+Class cDFUnitWebResouceManager_Mixin is a Mixin
+    {Visibility=Private}
+    Procedure Define_cDFUnitWebResouceManager_Mixin
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure Destory_cDFUnitWebResouceManager_Mixin
+    End_Procedure
+    
+    {Visibility=Private}
+    Function GetReportsCache Boolean bCreate Returns String
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    
+    {Visibility=Private}
+    Function UploadFolder Boolean bCreate Returns String
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+End_Class

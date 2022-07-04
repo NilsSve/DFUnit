@@ -1,0 +1,31 @@
+Use DFUnit\Web\WebAppDependencies.pkg
+
+{Visibility=Private}
+Class cDFUnitWebAppDD_Mixin is a Mixin
+    {Visibility=Private}
+    Procedure Define_cDFUnitWebAppDD_Mixin
+        Property Handle[] paDDOViews
+        Property Handle[] gaDDOViews
+        Property Boolean pbTestSyncDDO False
+        Property Boolean pbShowAllRefindErrors False
+    End_Procedure
+    
+    {Visibility=Private}
+    Function DEOFocusObject Returns Handle
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    
+    {Visibility=Private}
+    Function DEOControlFocusObject Returns Handle
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    
+    {Visibility=Private}
+    Function IsViewInSync Handle hoView Returns Boolean
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    
+    {Visibility=Private}
+    Procedure Destory_cDFUnitWebAppDD_Mixin
+    End_Procedure
+End_Class

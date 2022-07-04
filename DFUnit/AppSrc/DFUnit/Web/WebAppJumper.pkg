@@ -1,0 +1,116 @@
+Use DFUnit\Application.pkg
+Use DFUnit\Web.pkg
+
+{Visibility=Private}
+Class cDFUnitWebAppJumper is a cWebObject
+    
+    Import_Class_Protocol cDFUnitSyncPropHandler_Mixin
+    Import_Class_Protocol cDFUnitWebObjectCollector_Mixin
+    Import_Class_Protocol cDFUnitWebAppDD_Mixin
+    Import_Class_Protocol cDFUnitWebAppHistory_Mixin
+    Import_Class_Protocol cDFUnitWebResouceManager_Mixin
+    Import_Class_Protocol cDFUnitWebNavigator_Mixin
+    Import_Class_Protocol cDFUnitWebSession_Mixin
+    Import_Class_Protocol cDFUnitWebActions_Mixin
+    
+    Procedure Define_cDFUnitWebAppJumper
+        { Visibility=Private }
+        Property Boolean pbInitWebApp True
+        { Visibility=Private }
+        Property Boolean pbSynchronizing True
+        Property String psVersionID "dfunit-web-1.0"
+                
+        Send Define_cDFUnitSyncPropHandler_Mixin
+        Send Define_cDFUnitWebObjectCollector_Mixin
+        Send Define_cDFUnitWebAppDD_Mixin
+        Send Define_cDFUnitWebAppHistory_Mixin
+        Send Define_cDFUnitWebResouceManager_Mixin
+        Send Define_cDFUnitWebNavigator_Mixin
+        Send Define_cDFUnitWebSession_Mixin
+        Send Define_cDFUnitWebActions_Mixin
+        
+        Move Self to ghoWebApp
+        Move Self to ghoWebControlLocator
+        Move Self to ghoSyncPropsHandler
+        Move Self to ghoWebServerPropStore
+        
+        // Auto: Move oVDFInetSession to ghInetSession
+        Object oVDFInetSession is a cVDFInternetSession
+        End_Object
+        
+        // Auto: Move oWebServiceDispatcher to ghoWebServiceDispatcher
+        Object oWebServiceDispatcher is a cWebServiceDispatcher
+        End_Object
+        
+        Move 0 to ghoWebSessionManager
+        Move 0 to ghoWebErrorHandler
+        Move 0 to ghoWebResourceManager
+        Move 0 to ghoWebViewStack
+        Move 0 to giWebAccCacheCtx
+    End_Procedure
+    
+    Procedure Clear_cDFUnitWebAppJumper
+        Send ClearAllWebProperties of ghoSyncPropsHandler
+    End_Procedure
+    
+    Procedure Destroy_cDFUnitWebAppJumper
+        Send Destory_cDFUnitWebActions_Mixin
+        Send Destory_cDFUnitWebSession_Mixin
+        Send Destory_cDFUnitWebNavigator_Mixin
+        Send Destory_cDFUnitWebResouceManager_Mixin
+        Send Destory_cDFUnitWebAppHistory_Mixin
+        Send Destory_cDFUnitWebAppDD_Mixin
+        Send Destory_cDFUnitWebObjectCollector_Mixin
+        Send Destory_cDFUnitSyncPropHandler_Mixin
+    End_Procedure  
+    
+    { Visibility=Private }
+    Function CallAction tWebRequest Request Handle hoRequestAttachments Handle ByRef hoResponseAttachments Returns tWebResponse
+        tWebResponse oResponse
+        Function_Return oResponse
+    End_Function
+    
+    Function AppSynching Returns Boolean
+        Boolean bInitWebApp bSynchronizing
+        Get pbInitWebApp to bInitWebApp
+        Get pbSynchronizing to bSynchronizing
+        Function_Return (bInitWebApp or bSynchronizing)
+    End_Function
+    
+    {Visibility=Private}
+    Function ErrorCount Returns Integer
+        Function_Return 0
+        //TODO: 
+        //Function_Return (puiErrorCount(ghoDFTestEnvironment))
+    End_Function
+    
+    {Visibility=Private}
+    Procedure ClearError
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure ShowYesNo
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+    {Visibility=Private}
+    Procedure ShowYesNoCancel
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+    
+    #IF !@>191
+    {Visibility=Private}
+    Function AddResponseAttachment Handle hoJsonObject Returns Integer
+       // Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    #ENDIF
+    
+End_Class
+
+Import_Class_Protocol cDFUnitWebAppJumper cDFUnitTestApplication 
+
+// Will auto enable if defined.
+Use DFUnit\CallRecording.pkg
+
+Define Is$WebApp for 1
+Use AllWebAppClasses.pkg

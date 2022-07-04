@@ -1,0 +1,133 @@
+Use DFUnit\Web\WebAppDependencies.pkg
+Use DFUnit\Web\SyncPropHandler.pkg
+Use cWebObject.pkg
+
+#IF !@>191
+Use cWebObjectOwner_mixin.pkg
+
+{Visibility=Private}
+Procedure AddClientAction for cWebObjectOwner_mixin tWebClientAction tClientAction
+    
+End_Procedure
+
+#ELSE
+
+Procedure ClientAction for cWebObject String sName String[] aOptParams tWebValueTree aOptData
+    Handle hoLoadView hoNeigborhood
+    
+    tWebClientAction tClientAction
+    tWebClientAction[] aClientActions
+    
+    Get phoLoadView of ghoWebApp to hoLoadView
+    Get phoWebNeighborhood to hoNeigborhood
+    
+    If (hoLoadView <> C_WebUnresolvedObject and hoLoadView = hoNeigborhood) Begin
+        Move ctExecViewLoad     to tClientAction.eType
+    End
+    Else Begin
+        Move ctExecDefault      to tClientAction.eType    //  Execute as a default client action (after synchronization of web properties)
+    End
+    
+    Move sName   to tClientAction.sName
+    Get WebObjectName to tClientAction.sTarget
+    
+    If (num_arguments > 1) Begin
+        Move aOptParams to tClientAction.aParams
+    End
+    
+    If (num_arguments > 2) Begin
+        Move aOptData to tClientAction.tData
+    End
+
+    //Error 871 DFT_NON_IMPLEMENTED
+End_Procedure
+
+#ENDIF
+
+{Visibility=Private}
+Class cDFUnitWebObjectCollector_Mixin is a Mixin
+    
+    #IF !@>191    
+    Import_Class_Protocol cWebObjectOwner_mixin
+    #ENDIF
+    
+    {Visibility=Private}
+    Procedure Define_cDFUnitWebObjectCollector_Mixin
+        {Visibility=Private}
+        Property Handle[] paWebObjects
+        {Visibility=Private}
+        Property Handle[] paWebControls
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure Destory_cDFUnitWebObjectCollector_Mixin
+    End_Procedure
+    
+    {Visibility=Private}
+    Function WebObjects Returns Handle[]
+        Function_Return (paWebObjects(Self))
+    End_Function
+    
+    {Visibility=Private}
+    Function WebControls Returns Handle[]
+        Function_Return (paWebControls(Self))
+    End_Function
+    
+    {Visibility=Private}
+    Procedure RegisterChildWebObject Handle hWebObject
+        Handle[] aWebOobjects
+        Get paWebObjects to aWebOobjects
+        Move hWebObject to aWebOobjects[SizeOfArray(aWebOobjects)]
+        Set paWebObjects to aWebOobjects
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure RegisterWebControl Handle hWebObject
+        Handle[] aWebControls
+        Get paWebControls to aWebControls
+        Move hWebObject to aWebControls[SizeOfArray(aWebControls)]
+        Set paWebControls to aWebControls
+        
+        Send RegisterWebObject of ghoSyncPropsHandler hWebObject
+    End_Procedure
+    
+    { Visibility=Private }
+    Function WebNeighborhood Returns Handle
+        Function_Return Self
+    End_Function
+    
+    {Visibility=Private}
+    Function WebObjectName Handle hoObject Returns String
+        Integer iPos
+        String sObjectName
+        
+        Get Name of hoObject to sObjectName
+        
+        Move (Pos(".", sObjectName)) to iPos    // Remove the leftmost object name,
+        If (iPos > 0) Begin                     // which will be the name of the WebApp,
+           Move (Remove(sObjectName, 1, iPos)) to sObjectName
+        End
+        Else ;
+            Move "" to sObjectName
+        
+        #IF !@>191
+        Handle hoOwner
+        String sContainer sDynamicObjectId
+        
+        Get Owner of hoObject to hoOwner
+
+        If (hoOwner <> ghoWebApp) Begin
+            Get WebObjectName hoOwner to sContainer
+            Move (Remove(sObjectName, 0, Length(sContainer) + 1)) to sDynamicObjectId
+            Move (sContainer + "$" + sDynamicObjectId) to sObjectName
+        End
+        #ENDIF
+        
+        Function_Return sObjectName
+    End_Function
+    
+    {Visibility=Private}
+    Function FocusObject Returns Handle
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+End_Class

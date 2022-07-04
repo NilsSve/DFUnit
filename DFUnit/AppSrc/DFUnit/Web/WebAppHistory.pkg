@@ -1,0 +1,33 @@
+Use DFUnit\Web\WebAppDependencies.pkg
+
+{Visibility=Private}
+Class cDFUnitWebAppHistory_Mixin is a Mixin
+    {Visibility=Private}
+    Procedure Define_cDFUnitWebAppHistory_Mixin
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure Destory_cDFUnitWebAppHistory_Mixin
+    End_Procedure
+    
+    {Visibility=Private}
+    Function StateHash Returns String
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    {Visibility=Private}
+    Procedure ParseViewStateHash String sStateHash String ByRef sView String ByRef sOptRecordId String ByRef sOptCustomHash
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+    {Visibility=Private}
+    Function ConcatViewStateHash String sView String sRecordId String sCustomHash Returns String
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    {Visibility=Private}
+    Function AppendStateHash String sStateHash String sViewStateHash Returns String
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    {Visibility=Private}
+    Procedure SetStateHash
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+End_Class

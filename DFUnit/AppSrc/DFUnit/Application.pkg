@@ -19,6 +19,14 @@ Class cDFUnitTestApplication is a cDFUnitFixture
     Import_Class_Protocol cDFUnitTestRunner_Mixin
     Import_Class_Protocol cDFUnitFixtureRunner_Mixin
     
+    // Will be overwritten if DFUnitWeb has been used.
+    Procedure Define_cDFUnitWebAppJumper
+    End_Procedure
+    Procedure Clear_cDFUnitWebAppJumper
+    End_Procedure
+    Procedure Destroy_cDFUnitWebAppJumper
+    End_Procedure
+    
     Procedure Construct_Object
         Forward Send Construct_Object
         Move Self to ghoTestApplication
@@ -32,6 +40,7 @@ Class cDFUnitTestApplication is a cDFUnitFixture
         Send Define_cDFUnitStatisticsCollector_Mixin
         Send Define_cDFUnitTestRunner_Mixin
         Send Define_cDFUnitFixtureRunner_Mixin
+        Send Define_cDFUnitWebAppJumper
         
         Set psTestFixtureName to "All Tests"
         
@@ -44,6 +53,11 @@ Class cDFUnitTestApplication is a cDFUnitFixture
     Procedure End_Construct_Object
         If (pbAutoRun(Self)) ;
             Send AutoRun
+    End_Procedure
+    
+    Procedure Destroy_Object
+        Send Destroy_cDFUnitWebAppJumper
+        Forward Send Destroy_Object
     End_Procedure
     
     {Visibility=Private}
@@ -129,6 +143,7 @@ Class cDFUnitTestApplication is a cDFUnitFixture
     Procedure ManualRunTests
         Send ClearTestCounters
         Send ClearErrorTracker of ghoErrorTracker
+        Send Clear_cDFUnitWebAppJumper
         
         // Start Testing
         Send Reporters_Start Self

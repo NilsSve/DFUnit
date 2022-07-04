@@ -1,0 +1,13 @@
+Use DFUnit\Web\WebAppDependencies.pkg
+
+{Visibility=Private}
+Class cDFUnitWebActions_Mixin is a Mixin
+    {Visibility=Private}
+    Procedure Define_cDFUnitWebActions_Mixin
+        Property tWebClientAction[] paClientActions
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure Destory_cDFUnitWebActions_Mixin
+    End_Procedure
+End_Class

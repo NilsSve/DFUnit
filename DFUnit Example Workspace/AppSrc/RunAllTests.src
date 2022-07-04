@@ -1,4 +1,5 @@
-﻿Use DFUnit.pkg
+﻿Use DFUnitWeb.pkg
+Use AllWebAppClasses.pkg
 
 Object oApplication is a cApplication
 End_Object
@@ -21,5 +22,22 @@ Object oTestApplication is a cDFUnitTestApplication
         Send ExpectError DFERR_PROGRAM
             Error DFERR_PROGRAM "An expected error."
         Send UnExpectError DFERR_PROGRAM
+    End_Procedure
+    
+    Object oWebObject is a cWebObject
+        {WebProperty=Server}
+        Property String psValue "init"
+    End_Object
+    
+    { Published=True }
+    Procedure WebProperty
+        String sValue
+        WebSet psValue of oWebObject to "new"
+        
+        WebGet psValue of oWebObject to sValue
+        Send AssertSAreEqual "new" sValue "The Web value should be 'new'"
+        
+        Get psValue of oWebObject to sValue
+        Send AssertSAreEqual "init" sValue "The static value should be 'init'"
     End_Procedure
 End_Object

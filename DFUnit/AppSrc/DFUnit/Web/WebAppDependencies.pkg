@@ -1,0 +1,27 @@
+Use DFUnit\Application.pkg
+
+{ Visibility=Private }
+Define WebAppBase.exists for 9999
+{ Visibility=Private }
+Define cWebApp.exists for 9999
+{ Visibility=Private }
+Define cWebErrorHandler.exists for 9999
+{ Visibility=Private }
+Define WebAppError.exists for 9999
+{ Visibility=Private }
+Define cWebServerPropHandler.exists for 9999
+{ Visibility=Private }
+Define cWebServerPropStore.exists for 9999
+
+Use Dferror.pkg
+Use WebAppConstants.pkg
+Use tWebResponse.pkg
+Use WebAppGlobalObjectHandles.pkg
+
+// Contained in the WebAppJumper
+Register_Function ErrorCount Returns Integer
+
+Use tNameValuePair.pkg
+Use cWebServiceDispatcher.pkg
+
+Use cVdfInternetSession.pkg

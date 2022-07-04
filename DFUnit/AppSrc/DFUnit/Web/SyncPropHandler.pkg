@@ -1,0 +1,185 @@
+Use DFUnit\Web\WebAppDependencies.pkg
+Use cWebObject.pkg
+
+Class cDFUnitWebPropertyCache_Mixin is a Mixin
+    Procedure InitializePropertyCache
+        // Binairy search array based on paPubGetters.
+        Property Boolean[] pabDFUnitCachedValuesUsed
+        Property Variant[] pavDFUnitCachedValues
+    End_Procedure
+End_Class
+
+Import_Class_Protocol cDFUnitWebPropertyCache_Mixin cWebObject
+
+{Visibility=Private}
+Class cDFUnitSyncPropHandler_Mixin is a Mixin
+    {Visibility=Private}
+    Procedure Define_cDFUnitSyncPropHandler_Mixin
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure Destory_cDFUnitSyncPropHandler_Mixin
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure RegisterWebObject Handle hoObject
+        Send InitializePropertyCache of hoObject
+    End_Procedure
+    
+    {Visibility=Private}
+    Function GetPropertyMode Handle hoObject Integer iPubPropIndex Returns Integer
+        Integer[] aPubPropModes
+        Get paPubPropertyModes of hoObject to aPubPropModes
+        Function_Return aPubPropModes[iPubPropIndex]
+    End_Function
+    
+    {Visibility=Private}
+    Function IsSessionProperty Handle hoObject Integer iPubPropIndex Returns Boolean
+        Function_Return (GetPropertyMode(Self, hoObject, iPubPropIndex) = wptClientProtected)
+    End_Function
+    
+    {Visibility=Private}
+    Function GetSyncProp Handle hoObject Handle hmGetter String sPropName Integer iOptPubPropIndex Returns Variant
+        Integer iPubPropIndex
+        If (num_arguments > 3) ;
+            Move iOptPubPropIndex to iPubPropIndex
+        Else ;
+            Get FindPropIndex hoObject hmGetter to iPubPropIndex
+        
+        Variant vValue
+        Variant[] avDFUnitCachedValues
+        Boolean[] abDFUnitCachedValuesUsed
+        Get pabDFUnitCachedValuesUsed of hoObject to abDFUnitCachedValuesUsed
+        
+        // Value was not yet webset.
+        If (iPubPropIndex >= SizeOfArray(abDFUnitCachedValuesUsed) or abDFUnitCachedValuesUsed[iPubPropIndex] = False) Begin
+            Get hmGetter of hoObject to vValue
+            Function_Return vValue
+        End
+        
+        Get pavDFUnitCachedValues of hoObject to avDFUnitCachedValues
+        Function_Return avDFUnitCachedValues[iPubPropIndex]
+    End_Function
+    
+    {Visibility=Private}
+    Procedure SetSyncProp Handle hoObject Handle hmGetter String sPropName Variant vPropValue Integer iOptPubPropIndex
+        Integer iPubPropIndex
+        If (num_arguments > 4) ;
+            Move iOptPubPropIndex to iPubPropIndex
+        Else ;
+            Get FindPropIndex hoObject hmGetter to iPubPropIndex
+        
+        Variant[] avDFUnitCachedValues
+        Boolean[] abDFUnitCachedValuesUsed
+        Get pabDFUnitCachedValuesUsed of hoObject to abDFUnitCachedValuesUsed
+        
+        // Value was not yet webset.
+        If (iPubPropIndex >= SizeOfArray(abDFUnitCachedValuesUsed) or abDFUnitCachedValuesUsed[iPubPropIndex] = False) Begin
+            Move True to abDFUnitCachedValuesUsed[iPubPropIndex]
+            Set pabDFUnitCachedValuesUsed of hoObject to abDFUnitCachedValuesUsed
+        End
+        
+        Get pavDFUnitCachedValues of hoObject to avDFUnitCachedValues
+        Move vPropValue to avDFUnitCachedValues[iPubPropIndex]
+        Set pavDFUnitCachedValues of hoObject to avDFUnitCachedValues
+    End_Procedure
+    
+    {Visibility=Private}
+    Function FindPropIndex Handle hoObject Handle hmGetter Returns Integer
+        Handle[] aPubPropertyGetters
+        
+        Get paPubPropertyGetters of hoObject to aPubPropertyGetters
+        
+        Function_Return (SearchArray(hmGetter, aPubPropertyGetters))
+    End_Function
+    
+    #IF !@>191
+    
+    {Visibility=Private}
+    Function GetScalarSyncProp Handle hoObject Handle hmGetter String sPropName Integer iOptPubPropIndex Returns String
+        Function_Return (GetSyncProp(Self, hoObject, hmGetter, sPropName, iOptPubPropIndex))
+    End_Function
+    
+    {Visibility=Private}
+    Function GetAdvSyncProp Handle hoObject Handle hmGetter String sPropName Integer iOptPubPropIndex Returns Variant
+        Function_Return (GetSyncProp(Self, hoObject, hmGetter, sPropName, iOptPubPropIndex))
+    End_Function
+    
+    #ENDIF
+    
+    Procedure ClearSessionProperties
+        Handle hoObject
+        Handle[] aObject 
+        Integer iIterator iMaxIndex iPropIterator iMaxPropIndex
+        Boolean[] abDFUnitCachedValuesUsed
+        
+        // WebObject
+        Get WebObjects of ghoWebControlLocator to aObject
+        Move (SizeOfArray(aObject) - 1) to iMaxIndex
+        
+        For iIterator from 0 to iMaxIndex
+            Move aObject[iIterator] to hoObject
+            Get pabDFUnitCachedValuesUsed of hoObject to abDFUnitCachedValuesUsed
+            
+            Move (SizeOfArray(abDFUnitCachedValuesUsed) - 1) to iMaxPropIndex
+            For iPropIterator from 0 to iMaxPropIndex
+                If (IsSessionProperty(Self, hoObject, iPropIterator)) Begin
+                    Move False to abDFUnitCachedValuesUsed[iPropIterator]
+                End
+            Loop
+            
+            Set pabDFUnitCachedValuesUsed of hoObject to abDFUnitCachedValuesUsed
+        Loop
+        
+        // WebControls
+        Get WebControls of ghoWebControlLocator to aObject
+        Move (SizeOfArray(aObject) - 1) to iMaxIndex
+        
+        For iIterator from 0 to iMaxIndex
+            Move aObject[iIterator] to hoObject
+            Get pabDFUnitCachedValuesUsed of hoObject to abDFUnitCachedValuesUsed
+            
+            Move (SizeOfArray(abDFUnitCachedValuesUsed) - 1) to iMaxPropIndex
+            For iPropIterator from 0 to iMaxPropIndex
+                If (IsSessionProperty(Self, hoObject, iPropIterator)) Begin
+                    Move False to abDFUnitCachedValuesUsed[iPropIterator]
+                End
+            Loop
+            
+            Set pabDFUnitCachedValuesUsed of hoObject to abDFUnitCachedValuesUsed
+        Loop
+    End_Procedure
+    
+    Procedure ClearAllWebProperties
+        Handle[] aObject 
+        Integer iIterator iMaxIndex
+        Boolean[] abEmptyDFUnitCachedValuesUsed
+        
+        // WebObject
+        Get WebObjects of ghoWebControlLocator to aObject
+        Move (SizeOfArray(aObject) - 1) to iMaxIndex
+        
+        For iIterator from 0 to iMaxIndex
+            Set pabDFUnitCachedValuesUsed of aObject[iIterator] to abEmptyDFUnitCachedValuesUsed
+        Loop
+        
+        // WebControls
+        Get WebControls of ghoWebControlLocator to aObject
+        Move (SizeOfArray(aObject) - 1) to iMaxIndex
+        
+        For iIterator from 0 to iMaxIndex
+            Set pabDFUnitCachedValuesUsed of aObject[iIterator] to abEmptyDFUnitCachedValuesUsed
+        Loop
+    End_Procedure
+End_Class
+
+{Visibility=Private}
+Function _wp Global Handle hoObject String sPropName Returns Variant
+    Integer iPubPropIndex
+    String[] aPubPropertyNames
+    Get paPubPropertyNames of hoObject to aPubPropertyNames
+    
+    Move (SearchArray(sPropName, aPubPropertyNames)) to iPubPropIndex
+    
+    Function_Return (GetSyncProp(ghoWebServerPropStore, hoObject, -1, sPropName, iPubPropIndex))
+End_Function

@@ -1,0 +1,29 @@
+Use DFUnit\Web\WebAppDependencies.pkg
+
+{Visibility=Private}
+Class cDFUnitWebSessionSecurity_Mixin is a Mixin
+    {Visibility=Private}
+    Procedure Define_cDFUnitWebSessionSecurity_Mixin
+        Property Integer peLoginMode lmLoginNone
+        Property String psEncryptPassword ""
+    End_Procedure
+    
+    {Visibility=Private}
+    Function ValidLogin Returns Boolean
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    {Visibility=Private}
+    Procedure AddChangeRightsClient
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+    
+    Procedure FireNotifyChangeRights
+    End_Procedure
+    
+     Procedure RemoveChangeRightsClient Handle hoClient
+     End_Procedure
+    
+    {Visibility=Private}
+    Procedure Destory_cDFUnitWebSessionSecurity_Mixin
+    End_Procedure
+End_Class

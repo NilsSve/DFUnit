@@ -1,0 +1,53 @@
+Use DFUnit\Web\WebAppDependencies.pkg
+Use DFUnit\Web\WebSession.pkg
+Use WebAppConstants.pkg
+
+{Visibility=Private}
+Class cDFUnitWebNavigator_Mixin is a Mixin
+    {Visibility=Private}
+    Procedure Define_cDFUnitWebNavigator_Mixin
+        Property Integer piWindowWidth 0
+        Property Integer piWindowHeight 0
+        Property Handle phoLoadView C_WebUnresolvedObject
+        Property Handle phoDefaultView C_WebUnresolvedObject
+        
+        { EnumList = "wvsDesktop, wvsDrillDown" }
+        Property Integer peApplicationStyle wvsDesktop 
+        { EnumList="asmOff, asmHistoryOnly, asmHistoryAndUrls" }
+        Property Integer peApplicationStateMode asmOff              // Configures if history management is used and if the state should be part of the url
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure Destory_cDFUnitWebNavigator_Mixin
+    End_Procedure
+    Function IsViewLoaded Handle hoView Returns Boolean
+    End_Procedure
+    {Visibility=Private}
+    Function GetLoginView Returns Handle
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    {Visibility=Private}
+    Function GetDefaultView Returns Handle
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    {Visibility=Private}
+    Procedure ShowView Handle hoView Handle hmOptCallbackMsg Handle hoOptCallbackObj
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+    {Visibility=Private}
+    Procedure HideView Handle hoView
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+    {Visibility=Private}
+    Procedure NavigatePathBegin Handle hoNavigateToView Boolean bUnconditional
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+    {Visibility=Private}
+    Procedure NavigateRefresh
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+    {Visibility=Private}
+    Procedure DelayLoadview Handle hoView
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Procedure
+End_Class

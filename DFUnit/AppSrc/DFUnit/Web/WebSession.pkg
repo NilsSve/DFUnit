@@ -1,0 +1,30 @@
+Use DFUnit\Web\WebAppDependencies.pkg
+Use DFUnit\Web\WebSessionSecurity.pkg
+
+{Visibility=Private}
+Class cDFUnitWebSession_Mixin is a Mixin
+    Import_Class_Protocol cDFUnitWebSessionSecurity_Mixin
+    
+    {Visibility=Private}
+    Procedure Define_cDFUnitWebSession_Mixin
+        Property Handle phoInetSession  0
+        Property Boolean pbIsMobile False
+        
+        Send Define_cDFUnitWebSessionSecurity_Mixin
+    End_Procedure
+    
+    {Visibility=Private}
+    Procedure Destory_cDFUnitWebSession_Mixin
+        Send Destory_cDFUnitWebSessionSecurity_Mixin
+    End_Procedure
+    
+    {Visibility=Private}
+    Function ReadSessionKey Returns String
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+    {Visibility=Private}
+    Function RecreateSession Returns Boolean
+        Send ClearSessionProperties of ghoSyncPropsHandler
+        //Error 871 DFT_NON_IMPLEMENTED
+    End_Function
+End_Class
