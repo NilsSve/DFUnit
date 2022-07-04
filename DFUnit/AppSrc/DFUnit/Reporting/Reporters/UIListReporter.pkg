@@ -18,6 +18,10 @@ Class cDFUnitUIListInmediateReporter is a cRichEdit
         Send Define_cDFUnitLineBasedReporter_Mixin
     End_Procedure
     
+    Procedure Set Color Integer iColor
+        Forward Set Color to iColor
+    End_Procedure
+    
     Procedure Start Handle hEnv
         Send Select_All
         Send Delete

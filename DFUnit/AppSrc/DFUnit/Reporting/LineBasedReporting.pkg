@@ -8,6 +8,8 @@ Use DFUnit\Results\StatisticsCollector.pkg
 
 Use DFUnit\Reporting\ReporterInterface.pkg
 
+Use RGB.pkg
+
 Class cDFUnitLineBasedReporter_Mixin is a Mixin
     
     { Visibility=Private }
@@ -41,6 +43,9 @@ Class cDFUnitLineBasedReporter_Mixin is a Mixin
         
         Send IncreaseScope
         Send Print (TestName(hTest))
+    End_Procedure
+    
+    Procedure Set Color Integer iColor
     End_Procedure
     
     Procedure Fail_Assert Handle hEnv String sAssertMessage String[] asMessages
@@ -147,7 +152,7 @@ Class cDFUnitLineBasedReporter_Mixin is a Mixin
             
         Integer iScope
         Get CurrentScope to iScope
-        Function_Return (FillString(" ", iScope * piIndentationIncrease(Self)))
+        Function_Return (Repeat(" ", iScope * piIndentationIncrease(Self)))
     End_Function
     
     { Visibility=Private }

@@ -55,7 +55,7 @@ Class cDFUnitTestApplication is a cDFUnitFixture
         Get phoCommandLine of ghoApplication to hoCommandLine
         Get CountOfArgs of hoCommandLine to iArgCount
         
-        For iIndex from 0 to iArgCount
+        For iIndex from 0 to (iArgCount - 1)
             Move (Argument(hoCommandLine, iIndex)) to sArgument
             Case Begin
                 Case (sArgument = "-h" or sArgument = "--help")
