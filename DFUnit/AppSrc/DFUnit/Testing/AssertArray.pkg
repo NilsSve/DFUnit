@@ -1,0 +1,118 @@
+﻿Use VdfBase.pkg
+Use Winkern.pkg
+
+Use DFUnit\Globals.pkg
+Use DFUnit\Utils\Debugger.pkg
+Use DFUnit\Utils\Objects.pkg
+Use DFUnit\CallRecording.pkg
+
+Class cDFUnitAssertArray_Mixin is a Mixin
+    Procedure AssertStrArrAreEqual String[] Expected String[] Actual String sOptAssertMessage
+        Integer i iEqualCount
+        
+        If (SizeOfArray(Expected) = SizeOfArray(Actual)) Begin
+            For i from 0 to (SizeOfArray(Expected) - 1)
+                If (Expected[i] <> Actual[i]) ;
+                    Break
+                Else ;
+                    Move (iEqualCount + 1) to iEqualCount
+            Loop
+            
+            If (iEqualCount = SizeOfArray(Expected)) Begin
+                Send Succeed_Assert of ghoTestApplication
+                Procedure_Return
+            End
+        End
+
+        Send AssertFailed Expected Actual sOptAssertMessage
+    End_Procedure
+    
+    Procedure AssertFailed String[] Expected String[] Actual String sOptAssertMessage
+        String[1] asMessages
+        Move (SFormat("Should have been [%1] but was [%2]", String(Expected), String(Actual))) to asMessages[0]
+        If (num_arguments > 2) ;
+            Send Fail_Assert of ghoTestApplication asMessages sOptAssertMessage
+        Else ;
+            Send Fail_Assert of ghoTestApplication asMessages
+    End_Procedure
+    
+    Procedure ExpectError Integer iErrNum
+        Send ExpectError of ghoErrorTracker iErrNum
+    End_Procedure
+    
+    { Obsolete=True }
+    Procedure CheckIfExpectedError
+        Send CheckIfExpectedError of ghoErrorTracker
+    End_Procedure
+    
+    Procedure UnExpectError Integer iErrNum
+        If (num_arguments > 0) ;
+            Send UnExpectError of ghoErrorTracker iErrNum
+        Else ;
+            Send UnExpectError of ghoErrorTracker
+    End_Procedure
+    
+    #IFDEF DFUNIT_ENABLE_MESSAGE_CALL_TESTING
+    
+    Procedure AssertCalled Handle hMessage String sOptAssertMessage
+        If (DFUnit_HasMessageBeenCalled(hMessage) or DFUnit_HasGlobalMessageBeenCalled(hMessage)) Begin
+            Send Succeed_Assert of ghoTestApplication 
+            Procedure_Return
+        End
+        
+        String[1] asMessages
+        Move (SFormat("The Procedure or Function with message id [%1] should have been called.", String(hMessage))) to asMessages[0]
+        If (num_arguments > 1) ;
+            Send Fail_Assert of ghoTestApplication asMessages sOptAssertMessage
+        Else ;
+            Send Fail_Assert of ghoTestApplication asMessages
+    End_Procedure
+    
+    Procedure AssertNotCalled Handle hMessage String sOptAssertMessage
+        If (DFUnit_HasMessageBeenCalled(hMessage) = False and DFUnit_HasGlobalMessageBeenCalled(hMessage) = False) Begin
+            Send Succeed_Assert of ghoTestApplication 
+            Procedure_Return
+        End
+        
+        String[1] asMessages
+        Move (SFormat("The Procedure or Function with message id [%1] should not have been called.", String(hMessage))) to asMessages[0]
+        If (num_arguments > 1) ;
+            Send Fail_Assert of ghoTestApplication asMessages sOptAssertMessage
+        Else ;
+            Send Fail_Assert of ghoTestApplication asMessages
+    End_Procedure
+    
+    Procedure AssertCalledOnObject Handle hObject Handle hMessage String sOptAssertMessage
+        If (DFUnit_HasMessageBeenCalledOnObject(hObject, hMessage)) Begin
+            Send Succeed_Assert of ghoTestApplication 
+            Procedure_Return
+        End
+        
+        String[1] asMessages
+        Move (SFormat("The Procedure or Function with message id [%1] should have been called on ['%2'].", String(hMessage), DFUnit_NullableNameOfObject(hObject))) to asMessages[0]
+        If (num_arguments > 2) ;
+            Send Fail_Assert of ghoTestApplication asMessages sOptAssertMessage
+        Else ;
+            Send Fail_Assert of ghoTestApplication asMessages
+    End_Procedure
+    
+    Procedure AssertNotCalledOnObject Handle hObject Handle hMessage String sOptAssertMessage
+        If (DFUnit_HasMessageBeenCalledOnObject(hObject, hMessage) = False) Begin
+            Send Succeed_Assert of ghoTestApplication 
+            Procedure_Return
+        End
+        
+        String[1] asMessages
+        Move (SFormat("The Procedure or Function with message id [%1] should not have been called on ['%2'].", String(hMessage), DFUnit_NullableNameOfObject(hObject))) to asMessages[0]
+        If (num_arguments > 2) ;
+            Send Fail_Assert of ghoTestApplication asMessages sOptAssertMessage
+        Else ;
+            Send Fail_Assert of ghoTestApplication asMessages
+    End_Procedure
+    
+    Procedure ClearCallersTracking
+        Send DFUnit_ClearRecordedMessages
+    End_Procedure
+    
+    #ENDIF
+End_Class
