@@ -1,10 +1,12 @@
-Use DFUnit\Globals.pkg
+﻿Use DFUnit\Globals.pkg
 Use DFUnit\Testing\Assert.pkg
+Use DFUnit\Testing\AssertArray.pkg
 
 Use DFUnit\Utils\Objects.pkg
 
 Class cDFUnitTest is a cObject
     Import_Class_Protocol cDFUnitAssert_Mixin
+    Import_Class_Protocol cDFUnitAssertArray_Mixin
     
     Procedure Construct_Object
         Property String psTestName

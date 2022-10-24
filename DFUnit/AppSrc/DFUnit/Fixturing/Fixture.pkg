@@ -1,4 +1,5 @@
-Use DFUnit\Testing\Assert.pkg
+﻿Use DFUnit\Testing\Assert.pkg
+Use DFUnit\Testing\AssertArray.pkg
 Use DFUnit\Testing\TestCollector.pkg
 Use DFUnit\Fixturing\FixtureCollector.pkg
 
@@ -6,6 +7,7 @@ Use DFUnit\Utils\Objects.pkg
 
 Class cDFUnitFixture is a cObject
     Import_Class_Protocol cDFUnitAssert_Mixin
+    Import_Class_Protocol cDFUnitAssertArray_Mixin
     Import_Class_Protocol cDFUnitFixtureCollector_Mixin
     Import_Class_Protocol cDFUnitTestCollector_Mixin
     
