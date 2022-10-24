@@ -375,5 +375,4 @@ Class cDFUnitAssertArray_Mixin is a Mixin
         
         Function_Return saOut
     End_Function
-    #ENDIF
 End_Class
