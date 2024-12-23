@@ -1,4 +1,4 @@
-﻿Use VDFBase.pkg
+Use VDFBase.pkg
 
 Use DFUnit\Testing\Test.pkg
 Use DFUnit\Fixturing\Fixture.pkg
@@ -26,6 +26,9 @@ Class cDFUnitTestRunner_Mixin is a Mixin
         { Visibility=Private }
         Property Handle phCurrentTest 0
         
+        { Visibility=Public }
+        Property Boolean pShowDFUnitErrorInDebugger False
+
         Send AttachToTrackerEvents of ghoErrorTracker Self
     End_Procedure 
     
@@ -131,13 +134,16 @@ Class cDFUnitTestRunner_Mixin is a Mixin
     
     { Visibility=Private }
     Procedure Fail_Assert String[] asMessages String sOptAssertMessage
-        String sAssertMessage sFullMessage
-        If (num_arguments > 1) ;
-            Move sOptAssertMessage to sAssertMessage
-        Else ;
-            Move "[NO MESSAGE]" to sAssertMessage
-        
+        String sAssertMessage sFullMessage   
+        Boolean bShowDFUnitErrorInDebugger
         UBigInt ulAssertsFailed
+                
+        If (num_arguments > 1) ;
+            Move sOptAssertMessage to sAssertMessage   
+        // Nils; Think this only cludders up the output.
+//        Else ;
+//            Move "[NO MESSAGE]" to sAssertMessage
+        
         Get pulCurrentTest_AssertsFailed to ulAssertsFailed
         Increment ulAssertsFailed
         Set pulCurrentTest_AssertsFailed to ulAssertsFailed
@@ -145,7 +151,8 @@ Class cDFUnitTestRunner_Mixin is a Mixin
         Send Reporters_Fail_Assert Self sAssertMessage asMessages
         
         // Throw an error if we are currently debugging.
-        If (IsDebuggerPresent()) Begin
+        Get pShowDFUnitErrorInDebugger to bShowDFUnitErrorInDebugger
+        If (IsDebuggerPresent() and bShowDFUnitErrorInDebugger = True) Begin
             Move ('Assert "' + sAssertMessage + '" Failed.' + Character(10) + Character(13)) to sAssertMessage
             Integer iIterator
             For iIterator from 0 to (SizeOfArray(asMessages) - 1)

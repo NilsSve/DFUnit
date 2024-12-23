@@ -1,5 +1,4 @@
 Use seq_chnl.pkg
-
 Use DFUNit\Results\ResultCollector.pkg
 
 Define XML_NEWLINE_REPLACE for "&#10;"
@@ -85,12 +84,12 @@ Class cDFUnitXMLReporter is a cDFUnitResultCollector_Mixin
     Procedure WriteFixture Handle hFixture
         String sFixtureName
         tDFUnitFixtureResult oFixtureResult
-        Get ResultOfFixture hFixture to oFixtureResult
+        Integer iIterator iMaxIndex
         
+        Get ResultOfFixture hFixture to oFixtureResult
         Get FixtureName of hFixture to sFixtureName
         Send Write (SFormat('<testsuite name="%1" errors="%2" failures="%3">', sFixtureName, oFixtureResult.ulTotalErrors, oFixtureResult.ulTotalFailedAssertions))
         
-        Integer iIterator iMaxIndex
         Move (SizeOfArray(oFixtureResult.ahChildFixtures) - 1) to iMaxIndex
         For iIterator from 0 to iMaxIndex
             Send WriteFixture oFixtureResult.ahChildFixtures[iIterator]
@@ -106,17 +105,17 @@ Class cDFUnitXMLReporter is a cDFUnitResultCollector_Mixin
 
     {Visibility=Private}
     Procedure Finish Handle hEnv
-        Forward Send Finish
-        
+        Integer iChannel
         Boolean bExists
         String sFileName
+        
+        Forward Send Finish
         Get psFileName to sFileName
         File_Exist sFileName bExists
         If bExists Begin
             EraseFile sFileName
         End
         
-        Integer iChannel
         Move (Seq_New_Channel()) to iChannel
         Direct_Output channel iChannel ('BINARY: ' + sFileName)
         Set piChannel to iChannel

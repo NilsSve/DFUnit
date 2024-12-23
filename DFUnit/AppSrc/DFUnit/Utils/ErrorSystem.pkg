@@ -23,11 +23,12 @@ Class cDFUnitErrorSystem is a cObject
         // array of errors that we consider User Errors
         { Visibility=Private }
         Property Integer[] pUserErrorsArray
-        
+
+CompilerWarnings Off
         Object TrappedErrors is a Trapped_Errors_Array
             Send initArray
         End_Object
-        
+CompilerWarnings On
         Send Trap_All
         
         // define the standard user error numbers
