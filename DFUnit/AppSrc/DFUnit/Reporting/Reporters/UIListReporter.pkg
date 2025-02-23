@@ -124,7 +124,9 @@ Class cDFUnitUIListReporter is a cDFUnitUIListInmediateReporter
         Get paMessages to aMessages
         
         If (pbNewLine(Self) = True) Begin
-            Move (String(SizeOfArray(aMessages)) + " " + String(sIndentation) + sLine) to aMessages[SizeOfArray(aMessages) - 1]
+            Move (String(sIndentation) + sLine) to aMessages[SizeOfArray(aMessages) - 1] 
+            // This removes the "at line number" comment, so don't use for now
+//            Move (String(SizeOfArray(aMessages)) + " " + String(sIndentation) + sLine) to aMessages[SizeOfArray(aMessages) - 1]
         End
         Else Begin
             Move (aMessages[SizeOfArray(aMessages) - 1] + sLine) to aMessages[SizeOfArray(aMessages) - 1]
